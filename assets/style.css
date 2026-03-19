@@ -947,7 +947,9 @@ select.input-small {
     background: var(--color-hover);
 }
 
-/* --- Responsive --- */
+/* ==========================================================================
+   Responsive — Tablet (768px and below)
+   ========================================================================== */
 @media (max-width: 768px) {
     .container {
         padding: 1rem 0.75rem;
@@ -958,15 +960,57 @@ select.input-small {
         align-items: flex-start;
     }
 
-    .file-table th:nth-child(3),
-    .file-table td:nth-child(3),
-    .file-table th:nth-child(4),
-    .file-table td:nth-child(4) {
+    /* --- File Table → Card Layout (box view + admin file view) --- */
+    .file-section .file-table,
+    .admin-section form .file-table {
+        table-layout: auto;
+    }
+
+    .file-section .file-table thead,
+    .admin-section form .file-table thead {
         display: none;
+    }
+
+    .file-section .file-table tbody tr,
+    .admin-section form .file-table tbody tr {
+        display: block;
+        background: var(--color-bg);
+        border-radius: var(--radius);
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        border-bottom: none;
+    }
+
+    .file-section .file-table tbody tr:hover,
+    .admin-section form .file-table tbody tr:hover {
+        background: var(--color-bg);
+    }
+
+    .file-section .file-table td,
+    .admin-section form .file-table td {
+        display: block;
+        border-bottom: none;
+        padding: 0.125rem 0;
+        height: auto;
+    }
+
+    .file-table td.file-name {
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+        max-width: none;
+    }
+
+    .file-table td.file-actions {
+        margin-top: 0.5rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--color-border);
+        height: auto;
     }
 
     .file-actions {
         flex-wrap: wrap;
+        justify-content: flex-start;
     }
 
     .file-thumbnail {
@@ -974,11 +1018,297 @@ select.input-small {
         height: 36px;
     }
 
+    /* --- Admin Boxes Table → Card Layout --- */
+    .boxes-table thead {
+        display: none;
+    }
+
+    .boxes-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.125rem 0.75rem;
+        background: var(--color-bg);
+        border-radius: var(--radius);
+        padding: 0.75rem;
+        margin-bottom: 0.75rem;
+        border-bottom: none;
+    }
+
+    .boxes-table td {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        border-bottom: none;
+        padding: 0.25rem 0;
+        height: auto;
+        font-size: 0.8125rem;
+        overflow: hidden;
+    }
+
+    .boxes-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        font-size: 0.625rem;
+        color: var(--color-text-light);
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+    }
+
+    /* Name spans full width, no label */
+    .boxes-table td:first-child {
+        grid-column: 1 / -1;
+        font-size: 1.0625rem;
+        font-weight: 600;
+        padding-bottom: 0.375rem;
+        margin-bottom: 0.125rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .boxes-table td:first-child::before {
+        display: none;
+    }
+
+    /* Dropdowns full width within cell */
+    .boxes-table td select,
+    .boxes-table td .input-small {
+        width: 100% !important;
+    }
+
+    .boxes-table td .inline-form {
+        width: 100%;
+    }
+
+    /* Actions span full width */
+    .boxes-table td.file-actions {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        height: auto;
+        margin-top: 0.25rem;
+        padding-top: 0.5rem;
+        border-top: 1px solid var(--color-border);
+        gap: 0.375rem;
+    }
+
+    .boxes-table td.file-actions::before {
+        display: none;
+    }
+
+    /* Password form takes most of the row */
+    .boxes-table td.file-actions .inline-form:first-child {
+        grid-column: 1 / -1;
+        display: flex;
+        gap: 0.375rem;
+    }
+
+    .boxes-table td.file-actions .inline-form input[type="password"] {
+        flex: 1;
+        width: auto !important;
+        min-width: 0;
+    }
+
+    /* Delete button full width */
+    .boxes-table td.file-actions .inline-form:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .boxes-table td.file-actions .inline-form:last-child .btn {
+        width: 100%;
+    }
+
+    /* --- Activity Log → Card Layout --- */
+    .log-table thead {
+        display: none;
+    }
+
+    .log-table tbody tr {
+        display: block;
+        background: var(--color-bg);
+        border-radius: var(--radius);
+        padding: 0.625rem 0.75rem;
+        margin-bottom: 0.5rem;
+        border-bottom: none;
+    }
+
+    .log-table td {
+        display: inline;
+        border-bottom: none;
+        padding: 0;
+        height: auto;
+        font-size: 0.75rem;
+    }
+
+    /* Time on its own line */
+    .log-table td:first-child {
+        display: block;
+        color: var(--color-text-light);
+        font-size: 0.6875rem;
+        margin-bottom: 0.25rem;
+    }
+
+    /* Hide Size and IP on mobile */
+    .log-table td:nth-child(5),
+    .log-table td:nth-child(6) {
+        display: none;
+    }
+
+    /* Action badge, box, file inline */
+    .log-table td:nth-child(3)::before { content: " · "; color: var(--color-text-light); }
+    .log-table td:nth-child(4)::before { content: " · "; color: var(--color-text-light); }
+
+    /* --- Upload Controls --- */
+    .upload-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .upload-controls .btn-primary {
+        width: 100%;
+    }
+
+    .upload-controls .input-small {
+        width: 100% !important;
+    }
+
+    /* --- Modals --- */
+    .modal-content {
+        width: calc(100% - 2rem);
+        max-width: none;
+        margin: 1rem;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* --- Admin --- */
     .inline-form-row {
         flex-direction: column;
     }
 
     .inline-form-row input {
         width: 100%;
+    }
+
+    .admin-settings-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .stat-value {
+        font-size: 1.25rem;
+    }
+
+    /* --- Activity Log: hide IP and Size on mobile --- */
+    .file-table td:nth-last-child(2),
+    .file-table th:nth-last-child(2) {
+        /* This targets Size column in activity log */
+    }
+
+    /* --- Login --- */
+    .login-card {
+        margin-top: 2rem;
+    }
+
+    /* --- Share Page --- */
+    .share-page {
+        padding: 1.25rem;
+    }
+}
+
+/* ==========================================================================
+   Responsive — Phone (480px and below)
+   ========================================================================== */
+@media (max-width: 480px) {
+    .container {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .upload-section,
+    .file-section,
+    .admin-section {
+        padding: 1rem;
+    }
+
+    .drop-zone {
+        padding: 1rem;
+    }
+
+    .drop-zone-prompt {
+        font-size: 0.8125rem;
+    }
+
+    /* Smaller buttons on phone */
+    .btn-small {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    /* Queue items tighter */
+    .queue-item {
+        padding: 0.5rem;
+    }
+
+    .queue-item-name {
+        font-size: 0.75rem;
+    }
+
+    /* Stats cards */
+    .stat-card {
+        padding: 0.625rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+    }
+
+    .stat-label {
+        font-size: 0.6875rem;
+    }
+
+    /* Admin settings */
+    .admin-setting h3 {
+        font-size: 0.875rem;
+    }
+
+    .form-group label {
+        font-size: 0.8125rem;
+    }
+
+    /* Share page */
+    .share-page {
+        padding: 1rem;
+        margin: 1rem auto;
+    }
+
+    /* Login */
+    .login-card {
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .login-card h1 {
+        font-size: 1.5rem;
+    }
+
+    /* Log filters stack */
+    .log-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .log-filters select {
+        width: 100%;
+    }
+
+    /* Theme toggle smaller and closer to corner */
+    .theme-toggle {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        bottom: 1rem;
+        right: 1rem;
     }
 }

@@ -177,3 +177,21 @@ Polish and convenience features.
 
 **Deferred:**
 - API key auth — scripting uploads via curl (not needed currently, can add later)
+
+---
+
+### Milestone 4 — Mobile-Friendly
+Make all pages responsive for phones and tablets without changing the desktop layout.
+
+**Approach:** CSS-only — media queries in `style.css`, no PHP/HTML/JS changes.
+
+**Changes:**
+- File tables convert to stacked card layout on mobile (hide thead, block display on tr/td)
+- File action buttons fit in a single row on cards
+- Upload controls stack vertically on phones
+- Admin boxes table converts to cards with stacked controls
+- Activity log hides IP and Size columns on mobile
+- Stats row wraps to 2x2 grid on mobile
+- Modals go full-width on mobile with scroll handling
+- Login pages reduce top margin on phones
+- New breakpoint at 480px for small phones

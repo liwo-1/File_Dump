@@ -454,7 +454,7 @@ $flash = getFlash();
         <!-- Box List -->
         <div class="admin-section">
             <h2>All Boxes</h2>
-            <table class="file-table">
+            <table class="file-table boxes-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -469,12 +469,11 @@ $flash = getFlash();
                 <tbody>
                     <?php foreach ($boxes as $box): ?>
                         <tr>
-                            <td><a href="?view=<?= e($box['name']) ?>"><?= e($box['name']) ?></a></td>
-                            <td><?= e($box['display_name']) ?></td>
-                            <td><?= (int)$box['file_count'] ?></td>
-                            <td><?= formatFileSize($box['total_size']) ?></td>
-                            <td>
-                                <!-- Set Quota -->
+                            <td data-label="Name"><a href="?view=<?= e($box['name']) ?>"><?= e($box['name']) ?></a></td>
+                            <td data-label="Display"><?= e($box['display_name']) ?></td>
+                            <td data-label="Files"><?= (int)$box['file_count'] ?></td>
+                            <td data-label="Size"><?= formatFileSize($box['total_size']) ?></td>
+                            <td data-label="Quota">
                                 <form method="POST" action="" class="inline-form">
                                     <?= csrfField() ?>
                                     <input type="hidden" name="action" value="set_quota">
@@ -488,8 +487,7 @@ $flash = getFlash();
                                     </select>
                                 </form>
                             </td>
-                            <td>
-                                <!-- Set Default TTL -->
+                            <td data-label="Auto-Expiry">
                                 <form method="POST" action="" class="inline-form">
                                     <?= csrfField() ?>
                                     <input type="hidden" name="action" value="set_ttl">
@@ -711,7 +709,7 @@ $flash = getFlash();
             <?php if (empty($logEntries)): ?>
                 <p class="empty-state">No activity recorded yet.</p>
             <?php else: ?>
-                <table class="file-table">
+                <table class="file-table log-table">
                     <thead>
                         <tr>
                             <th>Time</th>
