@@ -2,7 +2,43 @@
 
 > This project was built entirely using [Claude Code](https://claude.ai/claude-code) — Anthropic's AI coding agent.
 
-A self-hosted web application for temporary file sharing between devices. Upload files from any machine, download them from any other, and let them expire automatically. Designed as a lightweight, privacy-first alternative to cloud file-sharing services.
+A self-hosted web application for temporary file sharing between devices.
+
+## Screenshots
+
+<details>
+<summary>Light Mode</summary>
+
+**Box Login**
+![Box Login - Light](assets/screenshots/Light%20-%20Box%20Login.png)
+
+**Box View — File List & Upload Queue**
+![Box View - Light](assets/screenshots/Light%20-%20Main%20Box.png)
+
+**Admin Dashboard — Storage & Box Management**
+![Admin Dashboard - Light](assets/screenshots/Light%20-%20Admin%201.png)
+
+**Admin Dashboard — Settings & Activity Log**
+![Admin Settings - Light](assets/screenshots/Light%20-%20Admin%202.png)
+
+</details>
+
+<details>
+<summary>Dark Mode</summary>
+
+**Box Login**
+![Box Login - Dark](assets/screenshots/Dark%20-%20Box%20Login.png)
+
+**Box View — File List & Upload Queue**
+![Box View - Dark](assets/screenshots/Dark%20-%20Main%20Box.png)
+
+**Admin Dashboard — Storage & Box Management**
+![Admin Dashboard - Dark](assets/screenshots/Dark%20-%20Admin%201.png)
+
+**Admin Dashboard — Settings & Activity Log**
+![Admin Settings - Dark](assets/screenshots/Dark%20-%20Admin%202.png)
+
+</details> Upload files from any machine, download them from any other, and let them expire automatically. Designed as a lightweight, privacy-first alternative to cloud file-sharing services.
 
 ## Features
 
