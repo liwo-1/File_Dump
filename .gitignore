@@ -17,6 +17,9 @@ docs/archive/
 CLAUDE.md
 todo.md
 
+# Test data
+test-data/
+
 # Editor/IDE
 .vscode/
 *.swp
