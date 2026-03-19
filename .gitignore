@@ -1,0 +1,23 @@
+# Runtime data — never commit
+data/filedump.db
+data/uploads/
+data/chunks/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Claude Code local settings
+.claude/
+
+# Personal development files
+docs/server-setup.sh
+docs/docker-portainer-setup.md
+docs/archive/
+CLAUDE.md
+todo.md
+
+# Editor/IDE
+.vscode/
+*.swp
+*.swo

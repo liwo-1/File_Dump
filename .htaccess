@@ -1,0 +1,85 @@
+# ==================================================
+# FileDump .htaccess — Security & URL Rewriting
+#
+# .htaccess is Apache's per-directory config file.
+# It lets us set rules without editing the main Apache config.
+# These rules apply to this directory and all subdirectories.
+# ==================================================
+
+# --- Block direct access to sensitive directories ---
+# If someone tries to visit /data/uploads/main/somefile.txt directly,
+# Apache returns a 403 Forbidden instead of serving the file.
+# This forces all file access through our PHP download handler
+# which checks authentication first.
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block access to data directory (uploads + database)
+    RewriteRule ^data/ - [F,L]
+
+    # Block access to includes directory (PHP backend code)
+    RewriteRule ^includes/ - [F,L]
+
+    # Block access to SQLite database files anywhere
+    RewriteRule \.db$ - [F,L]
+
+    # Block access to docs directory
+    RewriteRule ^docs/ - [F,L]
+
+    # Block access to tests directory
+    RewriteRule ^tests/ - [F,L]
+
+    # Block access to cron directory (CLI scripts only)
+    RewriteRule ^cron/ - [F,L]
+
+    # Block access to cli directory (CLI scripts only)
+    RewriteRule ^cli/ - [F,L]
+
+    # Block access to .md files (spec, todo, etc.)
+    RewriteRule \.md$ - [F,L]
+</IfModule>
+
+# --- Fallback: also block with directory-level rules ---
+# Belt-and-suspenders approach in case mod_rewrite is disabled
+
+<FilesMatch "\.(db|sqlite|sqlite3)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to .htaccess itself
+<Files ".htaccess">
+    Require all denied
+</Files>
+
+# Block access to setup.php (should be deleted after setup, but just in case)
+<Files "setup.php">
+    Require all denied
+</Files>
+
+# --- Security headers ---
+# These tell the browser to apply extra security measures
+
+<IfModule mod_headers.c>
+    # Prevent the browser from guessing (sniffing) file types.
+    # Without this, a browser might execute a .txt file as JavaScript.
+    Header set X-Content-Type-Options "nosniff"
+
+    # Prevent this site from being embedded in an iframe on another site.
+    # This blocks "clickjacking" attacks where a malicious site overlays
+    # an invisible iframe of your site to trick users into clicking things.
+    Header set X-Frame-Options "DENY"
+
+    # Content Security Policy — controls what resources the browser is allowed
+    # to load. 'self' means only from our own domain. This blocks inline scripts
+    # injected by XSS attacks from loading external resources.
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'"
+
+    # HSTS — once the browser sees this header over HTTPS, it will refuse to
+    # connect over plain HTTP for the next year. Only active after HTTPS is set up.
+    # The 'preload' flag is for submission to the HSTS preload list.
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+
+    # Prevent the browser from sending the full URL as a referrer to other sites
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
