@@ -146,6 +146,40 @@ function checkBoxQuota(int $boxId, int $fileSize = 0): array {
 }
 
 /**
+ * Get the real client IP address, even when behind a reverse proxy.
+ *
+ * When you use a reverse proxy like Nginx Proxy Manager (NPM), all requests
+ * arrive at Apache from the proxy's IP — not the user's real IP. The proxy
+ * passes the original client IP in headers like X-Forwarded-For or X-Real-IP.
+ *
+ * The best fix is enabling Apache's mod_remoteip (see docs/server-setup.sh),
+ * which rewrites REMOTE_ADDR at the Apache level. This function is a fallback
+ * that checks the headers directly in case mod_remoteip isn't configured yet.
+ *
+ * X-Forwarded-For can contain multiple IPs if there are several proxies:
+ *   "client_ip, proxy1_ip, proxy2_ip"
+ * The first (leftmost) IP is the original client, so we grab that one.
+ */
+function getClientIp(): string {
+    // Check X-Forwarded-For first (standard proxy header, may contain multiple IPs)
+    if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $clientIp = trim($ips[0]);
+        if (filter_var($clientIp, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return $clientIp;
+        }
+    }
+    // Check X-Real-IP (set by Nginx/NPM as a single IP)
+    if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+        $clientIp = trim($_SERVER['HTTP_X_REAL_IP']);
+        if (filter_var($clientIp, FILTER_VALIDATE_IP)) {
+            return $clientIp;
+        }
+    }
+    return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+}
+
+/**
  * Log an activity event.
  *
  * @param string      $action   What happened: 'upload', 'download', 'delete', 'login', 'login_failed'
@@ -155,7 +189,7 @@ function checkBoxQuota(int $boxId, int $fileSize = 0): array {
  */
 function logActivity(string $action, ?string $boxName = null, ?string $fileName = null, ?int $fileSize = null): void {
     $db = getDB();
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ip = getClientIp();
     $stmt = $db->prepare(
         'INSERT INTO activity_log (action, box_name, file_name, file_size, ip_address) VALUES (?, ?, ?, ?, ?)'
     );

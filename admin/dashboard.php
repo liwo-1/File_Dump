@@ -478,7 +478,7 @@ $flash = getFlash();
                                     <?= csrfField() ?>
                                     <input type="hidden" name="action" value="set_quota">
                                     <input type="hidden" name="box_id" value="<?= (int)$box['id'] ?>">
-                                    <select name="quota" class="input-small" onchange="this.form.submit()">
+                                    <select name="quota" class="input-small" data-autosubmit>
                                         <?php foreach ($quotaOptions as $val => $label): ?>
                                             <option value="<?= e($val) ?>"
                                                 <?= (string)($box['quota'] ?? '') === (string)$val ? 'selected' : '' ?>
@@ -492,7 +492,7 @@ $flash = getFlash();
                                     <?= csrfField() ?>
                                     <input type="hidden" name="action" value="set_ttl">
                                     <input type="hidden" name="box_id" value="<?= (int)$box['id'] ?>">
-                                    <select name="default_ttl" class="input-small" onchange="this.form.submit()">
+                                    <select name="default_ttl" class="input-small" data-autosubmit>
                                         <?php foreach ($ttlOptions as $val => $label): ?>
                                             <option value="<?= e($val) ?>"
                                                 <?= (string)($box['default_ttl'] ?? '') === (string)$val ? 'selected' : '' ?>
@@ -513,7 +513,7 @@ $flash = getFlash();
                                 </form>
                                 <!-- Delete Box -->
                                 <form method="POST" action="" class="inline-form"
-                                      onsubmit="return confirm('Delete box &quot;<?= e($box['name']) ?>&quot; and ALL its files?')">
+                                      data-confirm="Delete box &quot;<?= e($box['name']) ?>&quot; and ALL its files?">
                                     <?= csrfField() ?>
                                     <input type="hidden" name="action" value="delete_box">
                                     <input type="hidden" name="box_id" value="<?= (int)$box['id'] ?>">
@@ -536,7 +536,7 @@ $flash = getFlash();
             <?php else: ?>
                 <form method="POST" action="?view=<?= e($viewBox['name']) ?>"
                       id="bulk-form"
-                      onsubmit="return confirm('Delete selected files?')">
+                      data-confirm="Delete selected files?">
                     <?= csrfField() ?>
                     <input type="hidden" name="action" value="bulk_delete">
 
@@ -569,7 +569,7 @@ $flash = getFlash();
                                     <td>
                                         <form method="POST" action="?view=<?= e($viewBox['name']) ?>"
                                               class="inline-form"
-                                              onsubmit="return confirm('Delete this file?')">
+                                              data-confirm="Delete this file?">
                                             <?= csrfField() ?>
                                             <input type="hidden" name="action" value="delete_file">
                                             <input type="hidden" name="file_id" value="<?= (int)$file['id'] ?>">
@@ -582,11 +582,6 @@ $flash = getFlash();
                     </table>
                 </form>
 
-                <script>
-                    document.getElementById('select-all')?.addEventListener('change', function() {
-                        document.querySelectorAll('.file-checkbox').forEach(cb => cb.checked = this.checked);
-                    });
-                </script>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -683,21 +678,21 @@ $flash = getFlash();
         </div>
 
         <!-- Activity Log -->
-        <div class="admin-section">
+        <div class="admin-section" id="activity-log">
             <h2>Activity Log</h2>
 
             <!-- Filters -->
-            <form method="GET" class="log-filters">
+            <form method="GET" action="#activity-log" class="log-filters">
                 <?php if (!empty($_GET['view'])): ?>
                     <input type="hidden" name="view" value="<?= e($_GET['view']) ?>">
                 <?php endif; ?>
-                <select name="log_action" class="input-small" onchange="this.form.submit()">
+                <select name="log_action" class="input-small" data-autosubmit>
                     <option value="">All actions</option>
                     <?php foreach ($logActions as $a): ?>
                         <option value="<?= e($a) ?>" <?= $logFilter === $a ? 'selected' : '' ?>><?= e($a) ?></option>
                     <?php endforeach; ?>
                 </select>
-                <select name="log_box" class="input-small" onchange="this.form.submit()">
+                <select name="log_box" class="input-small" data-autosubmit>
                     <option value="">All boxes</option>
                     <?php foreach ($logBoxes as $b): ?>
                         <option value="<?= e($b) ?>" <?= $logBox === $b ? 'selected' : '' ?>><?= e($b) ?></option>
@@ -723,7 +718,7 @@ $flash = getFlash();
                     <tbody>
                         <?php foreach ($logEntries as $entry): ?>
                             <tr>
-                                <td style="white-space:nowrap"><?= e($entry['created_at']) ?></td>
+                                <td style="white-space:nowrap" data-utc="<?= e($entry['created_at']) ?>"><?= e($entry['created_at']) ?></td>
                                 <td><span class="log-action log-<?= e($entry['action']) ?>"><?= e($entry['action']) ?></span></td>
                                 <td><?= $entry['box_name'] ? e($entry['box_name']) : '' ?></td>
                                 <td class="file-name"><?= $entry['file_name'] ? e($entry['file_name']) : '' ?></td>
@@ -744,14 +739,14 @@ $flash = getFlash();
                             if ($logBox) $baseParams['log_box'] = $logBox;
                         ?>
                         <?php if ($logPage > 1): ?>
-                            <a href="?<?= http_build_query(array_merge($baseParams, ['log_page' => $logPage - 1])) ?>"
+                            <a href="?<?= http_build_query(array_merge($baseParams, ['log_page' => $logPage - 1])) ?>#activity-log"
                                class="btn btn-small btn-secondary">&laquo; Prev</a>
                         <?php endif; ?>
                         <span class="text-muted" style="font-size: 0.8125rem;">
                             Page <?= $logPage ?> of <?= $logPages ?>
                         </span>
                         <?php if ($logPage < $logPages): ?>
-                            <a href="?<?= http_build_query(array_merge($baseParams, ['log_page' => $logPage + 1])) ?>"
+                            <a href="?<?= http_build_query(array_merge($baseParams, ['log_page' => $logPage + 1])) ?>#activity-log"
                                class="btn btn-small btn-secondary">Next &raquo;</a>
                         <?php endif; ?>
                     </div>
@@ -759,6 +754,8 @@ $flash = getFlash();
             <?php endif; ?>
         </div>
     </div>
+    <script src="../assets/admin.js"></script>
+    <script src="../assets/localtime.js"></script>
     <script src="../assets/theme.js"></script>
     <script src="../assets/qrcode.min.js"></script>
     <script src="../assets/totp-setup.js"></script>

@@ -160,7 +160,7 @@ function logout(): void {
  */
 function isRateLimited(): bool {
     $db = getDB();
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ip = getClientIp();
 
     // Count recent failures in the last 15 minutes
     $stmt = $db->prepare(
@@ -202,7 +202,7 @@ function isRateLimited(): bool {
  */
 function recordFailedAttempt(): void {
     $db = getDB();
-    $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $ip = getClientIp();
 
     $stmt = $db->prepare('INSERT INTO login_attempts (ip_address) VALUES (?)');
     $stmt->execute([$ip]);
